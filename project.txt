@@ -1,0 +1,24 @@
+工程目录
+├─async_task
+│  ├─moduleA
+│  │  └─taska.py
+│  ├─moduleB
+│  │  └─taskb.py
+│  └─moduleC
+│      ├─task1
+│      │  └─task1.py
+│      ├─task2
+│      │  └─task2.py
+│      └─taskc.py
+├─my_celery_config
+│  └─one
+│      └─two
+│          └─three
+│              ├─config
+│              │  └─_celery_config.py, _celery_config_one.py
+│              ├─instance
+│                 └─one,two,three,four
+│
+├─publish_task
+│  └─one
+       └─two
