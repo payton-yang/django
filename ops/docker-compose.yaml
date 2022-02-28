@@ -1,0 +1,88 @@
+version: '3'
+services:
+  postgres:
+    container_name: postgres-db
+    image: 'postgres:latest'
+    environment:
+      POSTGRES_PASSWORD: password
+      PGDATA: /var/lib/postgresql/data/pgdata
+      TZ: 'Asia/Shanghai'
+    restart: always
+    volumes:
+      - './postgres/data.sql:/docker-entrypoint-initdb.d/init.sql'
+      - './postgres/data:/var/lib/postgresql/data/pgdata'
+    ports:
+      - "5432:5432"
+    networks:
+      my-net:
+        aliases:
+          - postgres
+  nginx:
+    container_name: nginx
+    image: nginx:latest
+    restart: always
+    ports:
+      - "8080:8080"
+    volumes:
+      - /mydata/app/demo1:/mydata/app/demo1
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    networks:
+      my-net:
+        aliases:
+          - nginx
+  redis:
+    image: redis:latest
+    container_name: redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./redis/redis.conf:/usr/local/etc/redis/redis.conf:rw
+      - ./redis/data:/data:rw
+    networks:
+      my-net:
+        aliases:
+          - redis
+    command:
+      /bin/bash -c "redis-server /usr/local/etc/redis/redis.conf"
+  rabbitmq:
+    image: rabbitmq:3.8-management
+    container_name: rabbitmq
+    hostname: my_rabbit
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    restart: always
+    volumes:
+      - ./rabbitmq/data:/var/lib/rabbitmq
+    networks:
+      my-net:
+        aliases:
+          - rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_VHOST: broker
+      RABBITMQ_DEFAULT_USER: root
+      RABBITMQ_DEFAULT_PASS: root
+      RABBITMQ_LOGS: /var/lib/rabbitmq/rabbitmq.log
+      RABBITMQ_SASL_LOGS: /var/lib/rabbitmq/rabbitmq-sasl.log
+      RABBITMQ_ERLANG_COOKIE: LZJADKXKLULIXFKAALGX
+      TZ: Asia/Shanghai
+  web:
+    container_name: python-3.8
+    build:
+      context: ../
+      dockerfile: ops/Dockerfile
+    restart: always
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+      - rabbitmq
+      - redis
+    networks:
+      my-net:
+        aliases:
+          - web
+networks:
+  my-net:
+    driver: bridge
