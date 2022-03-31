@@ -6,6 +6,7 @@ WORKDIR /usr/src/app
 COPY requirements.txt ./
 COPY sources.list /etc/apt/sources.list
 RUN  rm -Rf /var/lib/apt/lists/* && apt-get update && \
+     pip3 config set global.index-url https://pypi.douban.com/simple/ && \
      pip3 install --no-cache-dir -r requirements.txt && \
      echo_supervisord_conf > /usr/src/app/supervisord.conf && \
      mkdir /tmp/web && \
