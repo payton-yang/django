@@ -14,5 +14,5 @@ RUN  rm -Rf /var/lib/apt/lists/* && apt-get update && \
 COPY . .
 CMD python3 manage.py migrate --settings config.prod && \
     unlink /usr/src/app/supervisor.sock && \
-    supervisord -c /etc/supervisord.conf && \
+    supervisord -c /usr/src/app/supervisord.conf && \
     tail -F anything
