@@ -14,4 +14,5 @@ RUN  \cp /usr/src/app/supervisord.conf /etc/supervisord.conf
 
 CMD python3 manage.py migrate --settings config.prod && \
     unlink /usr/src/app/supervisor.sock && \
-    supervisord -c /etc/supervisord.conf
+    supervisord -c /etc/supervisord.conf && \
+    tail -F anything
